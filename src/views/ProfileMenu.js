@@ -24,7 +24,6 @@ export const ProfileMenuView = () => {
     <ViewContainer
       modelStyle={{...styles.modalView, ...commonStyles.shadowProp}}
       navigation={navigation}
-      height={600}
       animationFromTop={true}
       hideCloseButton={true}
       backDropOpacity={0.3}
@@ -60,7 +59,7 @@ export const ProfileMenuView = () => {
           marginBottom: 20,
         }}>
         <IconTextButton
-          wrapperStyles={{borderRadius: 8}}
+          wrapperStyles={{borderRadius: 8, width: '100%'}}
           iconStyles={{borderRadius: 20}}
           imgUrlSrc={loggedInUser.imageUrl}
           iconSrc={AvatarPng}
@@ -69,27 +68,27 @@ export const ProfileMenuView = () => {
           triggerFunc={() => navigation.navigate('ProfileView')}
         />
         <IconTextButton
-          wrapperStyles={{borderRadius: 8}}
+          wrapperStyles={{borderRadius: 8, width: '100%'}}
           iconSrc={CalenderIcon}
           selected={true}
           text="My Events"
         />
 
         <IconTextButton
-          wrapperStyles={{borderRadius: 8}}
+          wrapperStyles={{borderRadius: 8, width: '100%'}}
           iconSrc={CalenderIcon}
           selected={true}
           text="Reviews"
         />
         <IconTextButton
-          wrapperStyles={{borderRadius: 8}}
+          wrapperStyles={{borderRadius: 8, width: '100%'}}
           iconSrc={CalenderIcon}
           selected={true}
           text="Setting"
         />
         <IconTextButton
           wrapperStyles={{
-            flex: 1,
+            width: '100%',
             marginTop: 10,
             borderRadius: 8,
             backgroundColor: appStyle.buttonColor.error,
@@ -117,7 +116,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     position: 'absolute',
-    width: '40%',
+    width: '45%',
     height: 'auto',
     right: 15,
     top: 72,
@@ -132,7 +131,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   profileContainer: {
-    marginTop: -25,
     paddingLeft: 8,
     paddingRight: 8,
     marginBottom: 12,
@@ -156,7 +154,6 @@ const styles = StyleSheet.create({
   imageButtonStyle: {
     width: 25,
     height: 25,
-    marginTop: -10,
   },
   imageStyle: {
     width: 50,

@@ -16,10 +16,7 @@ export const MyEventsView = () => {
 
   const buttonNames = ['UpComing', 'Interested', 'Past'];
   return (
-    <ViewContainer
-      title="My Calender"
-      backDropOpacity={0.5}
-      viewName="MyEventsView">
+    <ViewContainer title="My Calender" backDropOpacity={0.5}>
       <TabViewContainer
         viewWidth={Dimensions.get('window').width * 0.8}
         buttonNames={buttonNames}

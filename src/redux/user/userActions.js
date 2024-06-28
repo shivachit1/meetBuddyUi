@@ -1,4 +1,4 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {
   followUser,
   getMyFollowers,
@@ -9,8 +9,15 @@ import {
 import axiosInstance from '../../service/axiosInstance';
 import {addNewFavourite, deleteFavourite} from '../../service/restService';
 import {showPopUpNotification} from '../notifications/notification_action';
-import {setActiveView} from '../ui/uiActions';
-import { removeStoredUserData, storeUserData } from '../../service/AsyncLocalStorage';
+import {
+  EVENT_SEARCH_FILTER,
+  setActiveView,
+  setEventSearchFilter,
+} from '../ui/uiActions';
+import {
+  removeStoredUserData,
+  storeUserData,
+} from '../../service/AsyncLocalStorage';
 
 export const SIGN_IN_USER = 'SIGN_IN_USER';
 export const LOG_OUT_USER = 'LOG_OUT_USER';
@@ -20,14 +27,14 @@ export const FETCH_FAVOURITES = 'FETCH_FAVOURITES';
 export const ADD_FAVOURITE = 'ADD_FAVOURITE';
 export const DELETE_FAVOURITE = 'DELETE_FAVOURITE';
 
-export const signInUser = (user) => async dispatch => {
+export const signInUser = user => async dispatch => {
   dispatch({
     type: SIGN_IN_USER,
     payload: {
       user: user,
     },
   });
-  storeUserData(user)
+  storeUserData(user);
 };
 
 export const updateUser = user => async dispatch => {
@@ -46,8 +53,13 @@ export const logOutUser = () => async dispatch => {
     dispatch({
       type: LOG_OUT_USER,
     });
-    removeStoredUserData()
-
+    dispatch(
+      setEventSearchFilter({
+        distance: 50,
+        day: 0,
+      }),
+    );
+    removeStoredUserData();
   } catch (error) {
     console.error('Error signing out: ', error);
   }
@@ -67,7 +79,7 @@ export const fetchUserFollowInfo = userId => async dispatch => {
   dispatch({
     type: FETCH_FAVOURITES,
     payload: {
-      ...followData
+      ...followData,
     },
   });
 };

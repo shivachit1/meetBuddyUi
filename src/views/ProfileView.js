@@ -44,7 +44,7 @@ export const ProfileView = () => {
     state => state.userReducer.followerData,
   );
 
-  const buttonNames = ['New Events', 'Previous Events', 'Reviews'];
+  const buttonNames = ['New Events', 'Past Events', 'Reviews'];
   return (
     <ViewContainer
       modelStyle={styles.modalView}
@@ -52,7 +52,7 @@ export const ProfileView = () => {
       height={600}
       title={loggedInUser.name}
       animationFromTop={true}
-      backDropOpacity={0.5}
+      backDropOpacity={0.4}
       viewName="ProfileView">
       <View style={styles.profileContainer}>
         <ImageView
@@ -73,7 +73,7 @@ export const ProfileView = () => {
             <TouchableOpacity style={{alignItems: 'center'}}>
               <TextView
                 text={followers.length}
-                textSize={16}
+                textSize={14}
                 fontWeight="bold"
               />
               <TextView
@@ -86,7 +86,7 @@ export const ProfileView = () => {
             <TouchableOpacity style={{alignItems: 'center'}}>
               <TextView
                 text={followings.length}
-                textSize={16}
+                textSize={14}
                 fontWeight="bold"
               />
               <TextView
@@ -101,10 +101,13 @@ export const ProfileView = () => {
           <View style={styles.buttonsContainer}>
             <IconTextButton
               wrapperStyles={{
-                ...styles.iconWrapper,
                 ...commonStyles.shadowProp,
+                ...styles.iconWrapper,
+                alignSelf: 'flex-start',
               }}
               imageStyle={styles.imageButtonStyle}
+              iconSrc={EditIcon}
+              text="Edit profile"
               triggerFunc={() => navigation.navigate('EditProfileView', {})}
             />
           </View>
@@ -188,7 +191,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   modalView: {
-    alignSelf:"center"
+    alignSelf: 'center',
   },
   bioContainer: {
     flex: 1,
@@ -228,8 +231,8 @@ const styles = StyleSheet.create({
     marginTop: -10,
   },
   imageStyle: {
-    width: 70,
-    height: 70,
+    width: 60,
+    height: 60,
     borderWidth: 2,
     borderColor: appStyle.blackColor.pureDark,
     objectFit: 'cover',

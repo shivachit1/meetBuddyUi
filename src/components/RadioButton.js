@@ -1,10 +1,13 @@
 import React from 'react';
 import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {TextView} from './TextView';
+import {appStyle} from '../styles/theme';
 
 const RadioButton = ({containerStyle, label, subLabel, selected, onPress}) => {
   return (
-    <TouchableOpacity style={{...styles.radioButton, ...containerStyle}} onPress={onPress}>
+    <TouchableOpacity
+      style={{...styles.radioButton, ...containerStyle}}
+      onPress={onPress}>
       <View style={styles.radioButtonOuter}>
         {selected && <View style={styles.radioButtonInner} />}
       </View>
@@ -20,9 +23,13 @@ const RadioButton = ({containerStyle, label, subLabel, selected, onPress}) => {
 
         {subLabel && (
           <TextView
-            textStyle={{...styles.radioButtonLabel, marginTop: 0}}
+            textStyle={{
+              ...styles.radioButtonLabel,
+              marginTop: 0,
+              color: appStyle.blackColor.midDark,
+            }}
             text={subLabel}
-            textSize={8}
+            textSize={10}
             fontWeight="bold"
           />
         )}

@@ -30,13 +30,13 @@ export const MapViewPage = ({route}) => {
   const {deviceLocation} = useDeviceLocation(); // helps to get device location permissions
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
   const {clearMapView} = useSelector(state => state.uiReducer.mapView);
 
   const [currentRegion, setCurrentRegion] = useState({
     latitudeDelta: 0.079,
     longitudeDelta: 0.079,
   });
-  const [selectedCoordinate, setSelectedCoordinate] = useState(null);
   const newEventData = route.params?.newEventData;
   const activePage = route.params?.activePage;
 
@@ -54,7 +54,7 @@ export const MapViewPage = ({route}) => {
       latitudeDelta: 0.079,
       longitudeDelta: 0.079,
     });
-    setCurrentRegion({...currentRegion, ...userLocationRef.current})
+    setCurrentRegion({...userLocationRef.current, ...userLocationRef.current});
   };
 
   const showEventCoordinate = event => {
@@ -74,11 +74,11 @@ export const MapViewPage = ({route}) => {
       newEventData: {
         ...newEventData,
         coordinate: {
-          latitude: selectedCoordinate.latitude,
-          longitude: selectedCoordinate.longitude,
+          latitude: currentRegion.latitude,
+          longitude: currentRegion.longitude,
         },
       },
-      activePage: activePage
+      activePage: activePage,
     });
   };
 
@@ -111,11 +111,8 @@ export const MapViewPage = ({route}) => {
         userLocationUpdateInterval={5000}
         onMapReady={() => showUserLocation()}
         onRegionChange={region => {
-          if (clearMapView) {
-            setSelectedCoordinate(region);
-          }
+          setCurrentRegion(region);
         }}
-        onRegionChangeComplete={region => setCurrentRegion(region)}
         loadingIndicatorColor={appStyle.blackColor.pureDark}
         onUserLocationChange={e =>
           (userLocationRef.current = {
@@ -131,12 +128,10 @@ export const MapViewPage = ({route}) => {
         {clearMapView && (
           <Marker
             tracksViewChanges={true}
-            coordinate={
-              selectedCoordinate || {
-                latitude: currentRegion.latitude,
-                longitude: currentRegion.longitude,
-              }
-            }
+            coordinate={{
+              latitude: currentRegion.latitude,
+              longitude: currentRegion.longitude,
+            }}
           />
         )}
       </AnimatedMapView>

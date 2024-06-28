@@ -128,7 +128,7 @@ export const SliderTwoPointerView = ({
   );
 
   return (
-    <View style={{marginTop : withArrowText ? 40 : 0}}>
+    <View style={{marginTop: withArrowText ? 40 : 0}}>
       <View style={{flex: 1, justifyContent: 'center'}}>
         <View style={{...styles.progressBarContainer, width: width}}></View>
         <View
@@ -172,6 +172,7 @@ export const SliderTwoPointerView = ({
 const styles = StyleSheet.create({
   progressBarContainer: {
     position: 'absolute',
+    alignSelf: 'center',
     height: 8,
     borderRadius: 10,
     backgroundColor: appStyle.blackColor.lightDark,

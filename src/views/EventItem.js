@@ -15,6 +15,7 @@ import HeartIcon from '../../assets/heart_grey.png';
 import {addFavourites, removeFavourites} from '../redux/user/userActions';
 import {useNavigation} from '@react-navigation/native';
 import {showPopUpNotification} from '../redux/notifications/notification_action';
+import {appStyle} from '../styles/theme';
 
 export const EventItem = ({event}) => {
   const dispatch = useDispatch();
@@ -63,19 +64,10 @@ export const EventItem = ({event}) => {
         </View>
 
         <View style={styles.columnContainer}>
-          <TextView text={event.eventTitle} textSize={12} fontWeight="bold" />
+          <TextView text={event.eventTitle} textSize={14} fontWeight="bold" />
           <TextView text={time} textSize={10} fontWeight="bold" />
           <TextView text={event.eventInfo} textSize={12} numberOfLines={2} />
         </View>
-      </View>
-
-      <View>
-        <IconButton
-          wrapperStyles={styles.iconButtonWrapper}
-          imageStyle={styles.imageStyle}
-          iconSrc={isFollowing ? HeartDarkIcon : HeartIcon}
-          triggerFunc={() => favouriteToggling()}
-        />
       </View>
     </TouchableOpacity>
   );
@@ -83,23 +75,21 @@ export const EventItem = ({event}) => {
 
 const styles = StyleSheet.create({
   columnContainer: {
+    flexGrow: 1,
     justifyContent: 'flex-start',
     paddingLeft: 14,
-    paddingRight: 30,
   },
   eventContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 4,
-    margin: 4,
+    padding: 8,
+    borderRadius: 4,
+    backgroundColor: appStyle.blackColor.lightDark,
   },
   timeWrapperContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  iconButtonWrapper: {
-    paddingLeft: 20,
   },
   imageStyle: {
     width: 22,

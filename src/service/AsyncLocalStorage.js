@@ -1,10 +1,21 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const storeUserData = async (user) => {
+export const storeUserData = async user => {
   try {
     await AsyncStorage.setItem('user', JSON.stringify(user));
   } catch (error) {
     console.error('Error storing user data: ', error);
+  }
+};
+
+export const storeEventSearchFilterData = async eventSearchFilter => {
+  try {
+    await AsyncStorage.setItem(
+      'eventSearchFilterData',
+      JSON.stringify(eventSearchFilter),
+    );
+  } catch (error) {
+    console.error('Error storing vent search filter data: ', error);
   }
 };
 
@@ -17,11 +28,23 @@ export const getStoredUserData = async () => {
   }
 };
 
+export const getStoredEventSearchFilterData = async () => {
+  try {
+    const eventSearchFilterData = await AsyncStorage.getItem(
+      'eventSearchFilterData',
+    );
+    return eventSearchFilterData ? await JSON.parse(eventSearchFilterData) : {};
+  } catch (error) {
+    console.error('Error retrieving event search filter data: ', error);
+  }
+};
+
 export const removeStoredUserData = async () => {
-    try {
-      await AsyncStorage.removeItem('user');
-      console.log("User removed from storage")
-    } catch (error) {
-      console.error('Error while removing user data: ', error);
-    }
-  };
+  try {
+    await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('eventSearchFilterData');
+    console.log('User data removed from storage');
+  } catch (error) {
+    console.error('Error while removing user data: ', error);
+  }
+};

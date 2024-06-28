@@ -12,7 +12,7 @@ export const getLoggedInUserEvents = async userId => {
   }
 };
 
-export const getEventsNearBy = async userId => {
+export const getEventsNearBy = async eventType => {
   try {
     const eventsRes = await axiosInstance.get('/events');
     const events = await eventsRes.data;

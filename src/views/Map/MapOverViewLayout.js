@@ -41,7 +41,7 @@ export const MapOverViewLayout = ({
           wrapperStyles={{...styles.iconWrapper, ...commonStyles.shadowProp}}
           imageStyle={styles.imageButtonStyle}
           iconSrc={BellOnIcon}
-          triggerFunc={() => navigation.navigate('EventSuccessView')}
+          triggerFunc={() => navigation.navigate('MyNotificationView')}
         />
         <IconButton
           wrapperStyles={{...styles.iconWrapper, ...commonStyles.shadowProp}}

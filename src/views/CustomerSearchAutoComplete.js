@@ -14,7 +14,7 @@ import AvatarPng from '../../assets/avatar.png';
 import ClosePng from '../../assets/close.png';
 import {TextView} from '../components/TextView';
 import RadioButton from '../components/RadioButton';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 export const CustomerSearchAutoComplete = ({
   title,
@@ -35,7 +35,7 @@ export const CustomerSearchAutoComplete = ({
         setLoading(true);
         try {
           const data = await searchUser(loggedInUser.jwtToken, searchTerm);
-          console.log(data)
+          console.log(data);
           setResults(data);
         } catch (error) {
           console.error(error);
@@ -158,11 +158,15 @@ export const CustomerSearchAutoComplete = ({
 
   return (
     <View style={styles.container}>
-      <TextView
-        style={{fontSize: 18, marginTop: 20}}
-        text={title}
-        fontWeight="bold"
-      />
+      {title && (
+        <TextView
+          style={{marginTop: 20}}
+          text={title}
+          textSize={12}
+          fontWeight="bold"
+        />
+      )}
+
       <View>
         <TextInput
           style={styles.textInputStyle}
@@ -188,7 +192,6 @@ export const CustomerSearchAutoComplete = ({
             <UserItem key={user.id} user={user} />
           ))}
         </View>
-
       </View>
     </View>
   );
@@ -196,16 +199,14 @@ export const CustomerSearchAutoComplete = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
     width: '100%',
-    height: '100%',
-    flex: 1,
-    padding: 10,
+    flexGrow: 1,
     backgroundColor: appStyle.pageColor,
     zIndex: 4,
     alignSelf: 'center',
   },
   textInputStyle: {
+    width: '100%',
     marginTop: 6,
     paddingTop: 2,
     paddingLeft: 4,
@@ -214,7 +215,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     borderRadius: 6,
     color: appStyle.blackColor.pureDark,
-    backgroundColor: appStyle.blackColor.lightDark,
+    borderWidth: 1,
+    borderColor: appStyle.blackColor.pureDark,
     justifyContent: 'center',
   },
   item: {

@@ -2,13 +2,20 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {commonStyles} from '../styles/styles';
 import {appStyle} from '../styles/theme';
 
-export const BasicButton = ({buttonStyle, textStyle, selected, text, triggerFunc}) => {
+export const BasicButton = ({
+  buttonStyle,
+  textStyle,
+  selected,
+  text,
+  triggerFunc,
+}) => {
   return (
     <TouchableOpacity
       style={{
         ...commonStyles.buttonContainer,
-        borderBottomWidth: selected ? 2 : 0,
-        borderBottomColor: selected
+        borderWidth: 1,
+        borderColor: appStyle.blackColor.lightDark,
+        backgroundColor: selected
           ? appStyle.blackColor.pureDark
           : 'transparent',
         ...buttonStyle,
@@ -19,7 +26,8 @@ export const BasicButton = ({buttonStyle, textStyle, selected, text, triggerFunc
         style={{
           ...commonStyles.buttonText,
           fontSize: 12,
-          ...textStyle
+          ...textStyle,
+          color: selected ? appStyle.pageColor : appStyle.blackColor.pureDark,
         }}>
         {text}
       </Text>
@@ -27,18 +35,34 @@ export const BasicButton = ({buttonStyle, textStyle, selected, text, triggerFunc
   );
 };
 
-export const IconTextButton = ({wrapperStyles, iconStyles, textStyle, selected, text, imgUrlSrc, iconSrc, triggerFunc}) => {
+export const IconTextButton = ({
+  wrapperStyles,
+  iconStyles,
+  textStyle,
+  selected,
+  text,
+  imgUrlSrc,
+  iconSrc,
+  triggerFunc,
+}) => {
   return (
     <TouchableOpacity
       style={{
         ...commonStyles.buttonContainer,
-        backgroundColor: selected ? appStyle.blackColor.lightDark : appStyle.pageColor,
+        backgroundColor: selected
+          ? appStyle.blackColor.lightDark
+          : appStyle.pageColor,
         ...commonStyles.shadowProp,
-        ...wrapperStyles
+        ...wrapperStyles,
       }}
       activeOpacity={0.4}
       onPress={() => triggerFunc()}>
-      {iconSrc && <Image style={{...styles.imgButton, ...iconStyles}} source={imgUrlSrc ? {uri : imgUrlSrc} : iconSrc} />}
+      {iconSrc && (
+        <Image
+          style={{...styles.imgButton, ...iconStyles}}
+          source={imgUrlSrc ? {uri: imgUrlSrc} : iconSrc}
+        />
+      )}
       <Text style={{...commonStyles.buttonText, ...textStyle}}>{text}</Text>
     </TouchableOpacity>
   );
@@ -70,15 +94,15 @@ export const ButtonSucess = ({text, triggerFunc}) => {
 export const ButtonError = ({text, iconSrc, triggerFunc}) => {
   return (
     <TouchableOpacity
-    style={{
-      ...commonStyles.buttonContainer,
-      backgroundColor: appStyle.buttonColor.error,
-      ...commonStyles.shadowProp,
-    }}
-    activeOpacity={0.4}
-    onPress={() => triggerFunc()}>
-    {iconSrc && <Image style={{...styles.imgButton}} source={iconSrc} />}
-    <Text style={{...commonStyles.buttonText, color:"white"}}>{text}</Text>
+      style={{
+        ...commonStyles.buttonContainer,
+        backgroundColor: appStyle.buttonColor.error,
+        ...commonStyles.shadowProp,
+      }}
+      activeOpacity={0.4}
+      onPress={() => triggerFunc()}>
+      {iconSrc && <Image style={{...styles.imgButton}} source={iconSrc} />}
+      <Text style={{...commonStyles.buttonText, color: 'white'}}>{text}</Text>
     </TouchableOpacity>
   );
 };

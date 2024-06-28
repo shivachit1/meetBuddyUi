@@ -10,6 +10,9 @@ import {
 import {TextInputView} from '../../components/TextInputView';
 import CalenderIcon from '../../../assets/calender_blur_icon.png';
 import FriendsIcon from '../../../assets/friends_blur_icon.png';
+import MovieIcon from '../../../assets/movie_icon.png';
+import MusicIcon from '../../../assets/music_icon.png';
+import TrekkingIcon from '../../../assets/trekking_icon.png';
 import BeerIcon from '../../../assets/beer_blur.png';
 import CoffeeIcon from '../../../assets/coffee_blur_icon.png';
 import CelebrationIcon from '../../../assets/celebration_blur_icon.png';
@@ -18,17 +21,20 @@ import AvatarPng from '../../../assets/avatar.png';
 import GymIcon from '../../../assets/gym_blur.png';
 import FilterIcon from '../../../assets/filter.png';
 import {fetchEvents} from '../../redux/events/eventsActions';
-import {EventType} from '../../modal/Enum';
+import {EventCategory, EventType} from '../../modal/Enum';
 
 import {commonStyles} from '../../styles/styles';
 import {useNavigation} from '@react-navigation/native';
-import { appStyle } from '../../styles/theme';
+import {appStyle} from '../../styles/theme';
+import {useState} from 'react';
+import {eventTypeOptions} from '../../modal/Event';
 
 export const MapSearchBar = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {loggedInUser} = useSelector(state => state.userReducer);
   const {eventsType} = useSelector(state => state.eventsReducer);
+  const [eventType, setEventType] = useState('');
 
   const handleChange = (name, value) => {
     console.log(value);
@@ -36,8 +42,6 @@ export const MapSearchBar = () => {
 
   const showEvents = eventType => {
     console.log(eventType);
-    dispatch(fetchEvents(eventType));
-    dispatch(showEventsView(true));
   };
 
   return (
@@ -51,61 +55,78 @@ export const MapSearchBar = () => {
           handleChange={handleChange}
           showLabel={false}
         />
-        <View style={{flexDirection: "row", alignItems : "center"}}>
-        <IconButton
-          wrapperStyles={{...styles.iconWrapper}}
-          imageStyle={styles.imageButtonStyle}
-          iconSrc={FilterIcon}
-          triggerFunc={() => navigation.navigate('FilterView')}
-        />
-        <ImageTextButton
-          imageStyle={{width: 35, height: 35, borderRadius: 25, zIndex: 100}}
-          iconSrc={
-            loggedInUser.imageUrl ? {uri: loggedInUser.imageUrl} : AvatarPng
-          }
-          triggerFunc={() => navigation.navigate('ProfileMenuView')}
-        />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <IconButton
+            wrapperStyles={{...styles.iconWrapper}}
+            imageStyle={styles.imageButtonStyle}
+            iconSrc={FilterIcon}
+            triggerFunc={() => navigation.navigate('FilterView')}
+          />
+          <ImageTextButton
+            imageStyle={{width: 35, height: 35, borderRadius: 25, zIndex: 100}}
+            iconSrc={
+              loggedInUser.imageUrl ? {uri: loggedInUser.imageUrl} : AvatarPng
+            }
+            triggerFunc={() => navigation.navigate('ProfileMenuView')}
+          />
         </View>
-
       </View>
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.searchButtons}>
         <IconTextButton
-          text="All Events"
+          text={EventCategory.ALL}
           iconSrc={CalenderIcon}
           selected={true}
-          triggerFunc={() => showEvents(EventType.ALL)}
+          triggerFunc={() => showEvents(EventCategory.ALL)}
         />
         <IconTextButton
-          text="Meet up"
-          iconSrc={FriendsIcon}
-          triggerFunc={() => showEvents(EventType.MEET_UP)}
-        />
-        <IconTextButton
-          text="Coffee"
-          iconSrc={CoffeeIcon}
-          triggerFunc={() => showEvents(EventType.COFFEE)}
-        />
-        <IconTextButton
-          text="Drinks"
-          iconSrc={BeerIcon}
-          triggerFunc={() => showEvents(EventType.DRINKS)}
-        />
-        <IconTextButton
-          text="Celebration"
+          text={EventCategory.CELEBRATION}
           iconSrc={CelebrationIcon}
           triggerFunc={() => showEvents(EventType.CELEBRATION)}
         />
         <IconTextButton
-          text="Gym"
+          text={EventCategory.MUSIC}
+          iconSrc={MusicIcon}
+          triggerFunc={() => showEvents(EventType.SPORTS)}
+        />
+        <IconTextButton
+          text={EventCategory.MEET_UP}
+          iconSrc={FriendsIcon}
+          triggerFunc={() => showEvents(EventCategory.MEET_UP)}
+        />
+
+        <IconTextButton
+          text={EventCategory.COFFEE}
+          iconSrc={CoffeeIcon}
+          triggerFunc={() => showEvents(EventType.COFFEE)}
+        />
+        <IconTextButton
+          text={EventCategory.DRINKS}
+          iconSrc={BeerIcon}
+          triggerFunc={() => showEvents(EventType.DRINKS)}
+        />
+
+        <IconTextButton
+          text={EventCategory.GYM}
           iconSrc={GymIcon}
           triggerFunc={() => showEvents(EventType.GYM)}
         />
         <IconTextButton
-          text="Sports"
+          text={EventCategory.SPORTS}
           iconSrc={SportsIcon}
+          triggerFunc={() => showEvents(EventType.SPORTS)}
+        />
+
+        <IconTextButton
+          text={EventCategory.MOVIE}
+          iconSrc={MovieIcon}
+          triggerFunc={() => showEvents(EventType.SPORTS)}
+        />
+        <IconTextButton
+          text={EventCategory.TRAVEL}
+          iconSrc={TrekkingIcon}
           triggerFunc={() => showEvents(EventType.SPORTS)}
         />
       </ScrollView>

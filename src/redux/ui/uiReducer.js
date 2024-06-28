@@ -10,6 +10,7 @@ import {
   SELECT_MAP_LOCATION,
   CLEAR_MAP_VIEW,
   POPULATE_MAP_VIEW,
+  EVENT_SEARCH_FILTER,
 } from './uiActions';
 
 const uiState = {
@@ -20,14 +21,26 @@ const uiState = {
     isVisible: false,
     message: '',
   },
+  eventSearchFilterState: {
+    distance: 50,
+    day: 0,
+  },
   mapView: {
     focusMarkerId: '',
-    clearMapView: false
+    clearMapView: false,
   },
 };
 
 export const uiReducer = (state = uiState, action) => {
   switch (action.type) {
+    case EVENT_SEARCH_FILTER:
+      return {
+        ...state,
+        eventSearchFilterState: {
+          ...state.eventSearchFilterState,
+          ...action.payload.eventSearchFilter,
+        },
+      };
     case ACTIVE_VIEW:
       return {
         ...state,
@@ -52,16 +65,16 @@ export const uiReducer = (state = uiState, action) => {
         ...state,
         eventsViewActive: action.payload.value,
       };
-      case CLEAR_MAP_VIEW:
-        return {
-          ...state,
-          mapView: {...state, clearMapView: true},
-        };
-        case POPULATE_MAP_VIEW:
-          return {
-            ...state,
-            mapView: {...state, clearMapView: false},
-          };
+    case CLEAR_MAP_VIEW:
+      return {
+        ...state,
+        mapView: {...state, clearMapView: true},
+      };
+    case POPULATE_MAP_VIEW:
+      return {
+        ...state,
+        mapView: {...state, clearMapView: false},
+      };
     case SHOW_NOTIFICATION:
       const {message, show} = action.payload;
       return {...state, notification: {message: message, isVisible: show}};
@@ -72,8 +85,7 @@ export const uiReducer = (state = uiState, action) => {
         mapView: {...state.mapView, focusMarkerId: pressedMarkerId},
       };
     case GET_ADDRESS:
-      const {getAddress} = action.payload
-      
+      const {getAddress} = action.payload;
 
     default:
       return state;

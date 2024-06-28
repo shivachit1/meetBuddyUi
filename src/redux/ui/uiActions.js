@@ -1,3 +1,4 @@
+import {storeEventSearchFilterData} from '../../service/AsyncLocalStorage';
 import axiosInstance from '../../service/axiosInstance';
 import {showPopUpNotification} from '../notifications/notification_action';
 
@@ -11,6 +12,18 @@ export const GET_ADDRESS = 'GET_ADDRESS';
 export const MARKER_PRESSED = 'MARKER_PRESSED';
 export const CLEAR_MAP_VIEW = 'CLEAR_MAP_VIEW';
 export const POPULATE_MAP_VIEW = 'POPULATE_MAP_VIEW';
+export const EVENT_SEARCH_FILTER = 'EVENT_SEARCH_FILTER';
+
+export const setEventSearchFilter = eventSearchFilter => dispatch => {
+  dispatch({
+    type: EVENT_SEARCH_FILTER,
+    payload: {
+      eventSearchFilter,
+    },
+  });
+
+  storeEventSearchFilterData(eventSearchFilter);
+};
 
 export const setActiveView = (viewName, props) => dispatch => {
   dispatch({

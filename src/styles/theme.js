@@ -2,7 +2,7 @@ export const appStyle = {
   pageColor: '#FFFFFF',
   blackColor: {
     pureDark: '#323232',
-    midDark: '#646464',
+    midDark: '#6E6E6E',
     lightDark: '#E1E1E1',
   },
   buttonColor: {

@@ -35,6 +35,9 @@ export const MyNotificationView = ({navigation}) => {
           contentContainerStyle={styles.scrollView}
           data={notifications}
           horizontal={false}
+          indicatorStyle="black"
+          endFillColor="red"
+          overScrollMode="never"
           key={({item, index}) => item.id}
           ItemSeparatorComponent={ItemSeparator}
           renderItem={({item, index}) => NotficationItemView(item)}

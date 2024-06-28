@@ -1,9 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  BackHandler,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {BasicButton} from '../components/Button';
 import {appStyle} from '../styles/theme';
 import {ProgressBar} from '../components/Progressbar';
 import {TextView} from '../components/TextView';
+import {useNavigation} from '@react-navigation/native';
 
 // buttonNames and views should be in list, and index must match with name -> view
 export const TabViewContainer = ({
@@ -15,15 +22,33 @@ export const TabViewContainer = ({
   finalButtonCall,
   children,
 }) => {
+  const navigation = useNavigation();
   const scrollViewRef = useRef();
   const buttonScrollViewRef = useRef();
   const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
     if (activePage) {
-      tabButtonPressed(buttonNames.indexOf(activePage))
+      tabButtonPressed(buttonNames.indexOf(activePage));
     }
-  }, [activePage])
+  }, [activePage]);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (currentTab > 0) {
+        tabButtonPressed(currentTab - 1);
+        return true; // Return true to prevent default back button behavior
+      }
+      return false; // Return false to allow the default back button behavior to close the app
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [currentTab]);
 
   const handleMomentumScrollEnd = e => {
     // Get the content offset of the ScrollView
@@ -45,27 +70,23 @@ export const TabViewContainer = ({
       <ScrollView
         horizontal={true}
         ref={buttonScrollViewRef}
-        style={{alignSelf: 'center'}}
-        contentContainerStyle={{
-          height: 16,
-          width: '100%',
-          marginTop: 12,
-          marginBottom: 12,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        {!buttonsVisible &&
+        style={{alignSelf: scrollEnabled ? 'flex-start' : 'center'}}
+        contentContainerStyle={
+          scrollEnabled ? styles.tabButtonStyle : styles.scrollIndicator
+        }>
+        {!scrollEnabled &&
           buttonNames.map((buttonName, index) => {
             return (
               <TouchableOpacity
                 key={buttonName}
-                style={{margin: 2}}
+                style={{margin: 0}}
                 onPress={() => tabButtonPressed(index)}>
                 <View
                   style={{
                     width: 8,
                     height: 8,
                     borderRadius: 4,
+                    margin: 4,
                     backgroundColor:
                       currentTab == index
                         ? appStyle.blackColor.pureDark
@@ -81,8 +102,14 @@ export const TabViewContainer = ({
             return (
               <BasicButton
                 key={index}
-                buttonStyle={styles.tabButtonStyle}
-                text={index + 1}
+                buttonStyle={{...styles.tabButtonStyle, borderWidth: 0}}
+                textStyle={{
+                  color:
+                    currentTab == index
+                      ? appStyle.blackColor.pureDark
+                      : appStyle.blackColor.midDark,
+                }}
+                text={buttonName}
                 selected={currentTab == index}
                 triggerFunc={() => tabButtonPressed(index)}
               />
@@ -92,6 +119,7 @@ export const TabViewContainer = ({
 
       <ScrollView
         ref={scrollViewRef}
+        style={{height: '100%'}}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         snapToInterval={viewWidth}
@@ -113,14 +141,15 @@ export const TabViewContainer = ({
           }); // Pass combined styles
         })}
       </ScrollView>
-      <View
-        style={{
-          marginTop: 35,
-          marginBottom: 12,
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-        }}>
-        {currentTab != 0 && (
+
+      {!scrollEnabled && ( // means if scrolling is blocked then there should be some button to change views
+        <View
+          style={{
+            marginTop: 15,
+            marginBottom: 12,
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+          }}>
           <BasicButton
             buttonStyle={{
               backgroundColor: appStyle.blackColor.lightDark,
@@ -128,23 +157,32 @@ export const TabViewContainer = ({
               paddingRight: 20,
               borderRadius: 6,
             }}
-            text="Back"
-            triggerFunc={() => tabButtonPressed(currentTab - 1)}
+            text={currentTab == 0 ? 'Close' : 'Back'}
+            triggerFunc={() =>
+              currentTab == 0
+                ? navigation.goBack()
+                : tabButtonPressed(currentTab - 1)
+            }
           />
-        )}
-
-        <BasicButton
-          buttonStyle={{
-            backgroundColor: appStyle.blackColor.pureDark,
-            paddingLeft: 20,
-            paddingRight: 20,
-            borderRadius: 6,
-          }}
-          textStyle={{color: appStyle.pageColor}}
-          text={currentTab == buttonNames.length - 1 ? 'Create Event' : 'Next'}
-          triggerFunc={() => currentTab == buttonNames.length - 1 ? finalButtonCall() : tabButtonPressed(currentTab + 1)}
-        />
-      </View>
+          <BasicButton
+            buttonStyle={{
+              backgroundColor: appStyle.blackColor.pureDark,
+              paddingLeft: 20,
+              paddingRight: 20,
+              borderRadius: 6,
+            }}
+            selected={true}
+            text={
+              currentTab == buttonNames.length - 1 ? 'Create Event' : 'Next'
+            }
+            triggerFunc={() =>
+              currentTab == buttonNames.length - 1
+                ? finalButtonCall()
+                : tabButtonPressed(currentTab + 1)
+            }
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -155,15 +193,24 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   rowContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'flex-start',
   },
   tabButtonStyle: {
-    margin: 2,
+    margin: 0,
+    paddingLeft: 6,
+    paddingRight: 6,
     borderRadius: 0,
-    borderTopLeftRadius: 6,
-    borderTopRightRadius: 6,
-    marginBottom: 0,
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 3,
+  },
+  scrollIndicator: {
+    height: 16,
+    marginTop: 12,
+    marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   progressBar: {
     margin: 2,

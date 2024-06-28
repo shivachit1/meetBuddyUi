@@ -14,16 +14,22 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {ProfileMenuView} from './views/ProfileMenu';
 import {ProfileView} from './views/ProfileView';
 import {MyNotificationView} from './views/MyNotificaionView';
-import {MessageView} from './views/MessageView';
+import {MessageView} from './views/message/MessageListView';
 import {MyEventsView} from './views/MyEventsView';
 import {EventDetailsView} from './views/EventDetailsView';
-import {CreateEventView} from './views/CreateEventView';
+import {CreateEventView} from './views/CreateNewEvent/CreateEventView';
 import {UnFollowOrganizerConfirmView} from './views/UnFollowOrganizerConfirmView';
 import {EditProfileView} from './views/EditProfile';
 import {useGetUserData} from './redux/hooks/localstorage';
 import {FilterView} from './views/FilterView';
 import {CustomerSearchAutoComplete} from './views/CustomerSearchAutoComplete';
 import {EventSuccessView} from './views/SuccessView';
+import {io} from 'socket.io-client';
+import {SERVER_URL} from '../config/config';
+import {ChatRoomView} from './views/message/ChatRoomView';
+import {InvitationView, SearchUserView} from './views/InvitationView';
+
+export const socket = io(SERVER_URL);
 
 const Stack = createNativeStackNavigator();
 
@@ -115,11 +121,6 @@ export const HomeView = () => {
             component={EventDetailsView}
             options={{headerShown: false}}
           />
-          <Stack.Screen
-            name="CreateEventView"
-            component={CreateEventView}
-            options={{headerShown: false}}
-          />
 
           <Stack.Screen
             name="EventSuccessView"
@@ -135,6 +136,29 @@ export const HomeView = () => {
           <Stack.Screen
             name="CustomerSearchAutoComplete"
             component={CustomerSearchAutoComplete}
+            options={{headerShown: false}}
+          />
+
+          <Stack.Screen
+            name="ChatRoomView"
+            component={ChatRoomView}
+            options={{headerShown: false}}
+          />
+
+          <Stack.Screen
+            name="InvitationView"
+            component={InvitationView}
+            options={{headerShown: false}}
+          />
+        </Stack.Group>
+        <Stack.Group
+          screenOptions={{
+            animation: 'fade',
+            animationDuration: 2000,
+          }}>
+          <Stack.Screen
+            name="CreateEventView"
+            component={CreateEventView}
             options={{headerShown: false}}
           />
         </Stack.Group>

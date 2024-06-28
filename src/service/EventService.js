@@ -3,8 +3,8 @@ import axiosInstance, {setAuthToken} from './axiosInstance';
 export const createNewEvent = async (token, event) => {
   try {
     setAuthToken(token);
-    const newEvent = {...event, coHosts : event.coHosts.map(user => user.id)}
-    const res = await axiosInstance.post('/events', {newEvent});
+    const newEvent = {...event, coHosts: event.coHosts.map(user => user.id)};
+    const res = await axiosInstance.post('/events', {event: newEvent});
     const newCreatedEvent = await res.data;
 
     return newCreatedEvent;

@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const GOOGLE_API_KEY = 'Replace with your Google API key'; // Replace with your Google API key
+import { GOOGLE_API_KEY } from '../../config/config';
 
 export const getAddressFromCoordinates = async ({latitude, longitude}) => {
   try {

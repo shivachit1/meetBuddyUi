@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, {useRef, useState} from 'react';
 import {
   Animated,
   Dimensions,
@@ -7,8 +7,8 @@ import {
   View,
 } from 'react-native';
 
-import { appStyle } from '../styles/theme';
-import { TextView } from '../components/TextView';
+import {appStyle} from '../styles/theme';
+import {TextView} from '../components/TextView';
 
 export const SliderView = ({
   width,
@@ -16,7 +16,7 @@ export const SliderView = ({
   maxValue,
   value,
   handleChange,
-  withArrowText
+  withArrowText,
 }) => {
   const valuePerPix = width / maxValue;
   const slidePosition = useRef(new Animated.Value(value * valuePerPix)).current;
@@ -50,30 +50,30 @@ export const SliderView = ({
           width: 40,
           top: -28,
           borderRadius: 6,
-          alignItems: "center",
+          alignItems: 'center',
           padding: 4,
           paddingTop: 0,
           backgroundColor: appStyle.blackColor.pureDark,
         }}>
         <TextView
-          textStyle={{ color: appStyle.pageColor, textAlign: 'center' }}
+          textStyle={{color: appStyle.pageColor, textAlign: 'center'}}
           text={sliderValue}
           textSize={10}
           fontWeight="bold"
         />
         <View style={styles.pointer}></View>
       </View>
-    )
-  }
+    );
+  };
 
   return (
-    <View style={styles.progressbarView}>
-      <View style={{ ...styles.progressBarContainer, width: width }}></View>
+    <View style={{...styles.progressbarView, width: width}}>
+      <View style={{...styles.progressBarContainer, width: width}}></View>
       <Animated.View
-        style={[styles.progressBar, { maxWidth: width, width: slidePosition }]}
+        style={[styles.progressBar, {maxWidth: width, width: slidePosition}]}
         {...panResponder.panHandlers}>
         <View style={styles.circleAnim}>
-          {withArrowText && <ArrowTextView/>}
+          {withArrowText && <ArrowTextView />}
           <View
             style={[
               styles.circleInactive,
@@ -87,6 +87,7 @@ export const SliderView = ({
 
 const styles = StyleSheet.create({
   progressbarView: {
+    alignSelf: 'center',
     marginTop: 6,
     marginBottom: 6,
     backgroundColor: 'red',

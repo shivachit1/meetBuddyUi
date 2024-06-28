@@ -8,18 +8,14 @@ import {
   PanResponder,
   KeyboardAvoidingView,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {removeView, setActiveView} from '../redux/ui/uiActions';
+import {useDispatch} from 'react-redux';
+import {removeView} from '../redux/ui/uiActions';
 import {TextView} from '../components/TextView';
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 
 import {commonStyles} from '../styles/styles';
-import {UnFollowConfirmView} from '../views/UnFollowOrganizerConfirmView';
-import {IconButton} from '../components/Button';
-
-import CloseIcon from '../../assets/close.png';
+import {useNavigation} from '@react-navigation/native';
 import {appStyle} from '../styles/theme';
-import { useNavigation } from '@react-navigation/native';
 
 const deviceHeight = Dimensions.get('window').height;
 
@@ -34,44 +30,46 @@ export const BottomSheetContainer = ({
   viewName,
   children,
   scrollView,
+  actionButtonView,
 }) => {
   const dispatch = useDispatch();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   const scrollUp = useRef(new Animated.Value(deviceHeight)).current;
   const opacityValue = useRef(new Animated.Value(0)).current;
+  const [isScrollViewAtTop, setIsScrollViewAtTop] = useState(true);
 
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (event, gesture) => {
-        const constrainedOffsetY = Math.max(
-          Math.min(gesture.dy, deviceHeight),
-          -10,
-        );
-        scrollUp.setValue(constrainedOffsetY);
+  const panResponder = PanResponder.create({
+    onMoveShouldSetPanResponder: (event, gestureState) => isScrollViewAtTop,
+    onPanResponderMove: (event, gesture) => {
+      const constrainedOffsetY = Math.max(
+        Math.min(gesture.dy, deviceHeight),
+        0,
+      );
+      scrollUp.setValue(constrainedOffsetY);
 
-        // Calculate opacity based on gesture movement
-        const opacity = Math.min(
-          0.8,
-          Math.max(
-            0,
-            backDropOpacity -
-              constrainedOffsetY / (backDropOpacity * deviceHeight),
-          ),
-        );
-        opacityValue.setValue(opacity);
-      },
-      onPanResponderRelease: () => {
-        const currentPosition = scrollUp._value;
-        if (currentPosition > 300) {
-          removeViewWithAnim();
-        } else {
-          showViewWithAnim();
-        }
-      },
-    }),
-  ).current;
+      const opacity = Math.min(
+        backDropOpacity,
+        Math.max(
+          0,
+          backDropOpacity -
+            constrainedOffsetY / (backDropOpacity * deviceHeight),
+        ),
+      );
+      opacityValue.setValue(opacity);
+    },
+    onPanResponderGrant: (event, gesture) => {
+      setIsScrollViewAtTop(Math.abs(gesture.dy) > 5);
+    },
+    onPanResponderRelease: () => {
+      const currentPosition = scrollUp._value;
+      if (currentPosition > 300) {
+        removeViewWithAnim();
+      } else {
+        showViewWithAnim();
+      }
+    },
+  });
 
   useEffect(() => {
     showViewWithAnim();
@@ -107,6 +105,17 @@ export const BottomSheetContainer = ({
     ]).start(() => navigation.goBack());
   };
 
+  const handleScroll = event => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    if (offsetY === 0) {
+      setIsScrollViewAtTop(true);
+    } else {
+      setIsScrollViewAtTop(false);
+    }
+  };
+
+  console.log(isScrollViewAtTop);
+
   const styles = getStyles(height, alignItems);
   return (
     <View style={{...styles.container}}>
@@ -129,10 +138,19 @@ export const BottomSheetContainer = ({
           <TextView text={title} textSize={16} fontWeight="bold" />
         </View>
 
-        {scrollView && (
-          <ScrollView style={styles.scrollView}>{children}</ScrollView>
+        {scrollView ? (
+          <ScrollView
+            style={styles.scrollView}
+            onScroll={handleScroll}
+            indicatorStyle="default"
+            scrollEventThrottle={16}>
+            {children}
+          </ScrollView>
+        ) : (
+          <View style={styles.scrollView}>{children}</View>
         )}
-        {!scrollView && <View style={styles.scrollView}>{children}</View>}
+
+        {actionButtonView}
       </Animated.View>
     </View>
   );
@@ -163,11 +181,10 @@ const getStyles = (height, alignItems) => {
       borderRadius: 2,
     },
     modalView: {
-      height: height ? height : '70%',
+      height: height ? height : '60%',
       width: '100%',
       padding: 10,
-      paddingBottom: 30,
-      marginBottom: -10,
+      paddingBottom: 0,
       alignItems: alignItems ? alignItems : 'flex-start',
       justifyContent: 'flex-start',
       backgroundColor: appStyle.pageColor,

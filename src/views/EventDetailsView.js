@@ -1,4 +1,10 @@
-import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {TextView} from '../components/TextView';
 import {BottomSheetContainer} from '../container/BottonSheetContainer';
 import {
@@ -6,11 +12,14 @@ import {
   ButtonError,
   ButtonSucess,
   IconButton,
+  IconTextButton,
   ImageTextButton,
 } from '../components/Button';
 import Avatar from '../../assets/avatar.png';
 import MarkerIcon from '../../assets/marker_icon.png';
 import ClockIcon from '../../assets/clock.png';
+import ShareIcon from '../../assets/upload.png';
+import CalenderIcon from '../../assets/calender_blur_icon.png';
 import FriendsBlurIcon from '../../assets/friends_blur_icon.png';
 import ChatIcon from '../../assets/chat_icon.png';
 import AvatarSampe from '../../assets/sample.jpg';
@@ -22,20 +31,19 @@ import {useEffect, useState} from 'react';
 import {addFavourites, removeFavourites} from '../redux/user/userActions';
 
 import HeartDarkIcon from '../../assets/heart_dark.png';
-import HeartIcon from '../../assets/heart_grey.png';
+import FriendsIcon from '../../assets/friends_blur_icon.png';
 import {useNavigation} from '@react-navigation/native';
 import {getEventByid} from '../service/restService';
 import {showPopUpNotification} from '../redux/notifications/notification_action';
 import {Picker, PickerIOS} from '@react-native-picker/picker';
 import {endEvent} from 'react-native/Libraries/Performance/Systrace';
+import {getDate, getTime} from '../util/dateFormatter';
 
 export const EventDetailsView = ({route}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const {loggedInUser} = useSelector(state => state.userReducer);
-
-  const [selectedTimeZone, setSelectedTimeZone] = useState('Respond');
 
   const [event, setEvent] = useState();
 
@@ -54,17 +62,8 @@ export const EventDetailsView = ({route}) => {
     return <></>;
   }
 
-  const favouriteToggling = () => {
-    if (isFollowing) {
-      dispatch(removeFavourites(loggedInUser.id, event.id, null));
-    } else {
-      dispatch(addFavourites(loggedInUser.id, event.id, null));
-    }
-  };
-
   const organizer = event.createdBy;
-  const isFollowing = false;
-  const imageSources = [Avatar, Avatar];
+  const imageSources = [Avatar, Avatar, Avatar];
   const address =
     event.address.streetName +
     ' ' +
@@ -76,65 +75,221 @@ export const EventDetailsView = ({route}) => {
     ', ' +
     event.address.country;
 
-  const timeZones = ['Respond', 'Interested', 'Going'];
+  const jointEventButton = () => {
+    return (
+      <View
+        style={{
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 8,
+        }}>
+        <BasicButton
+          buttonStyle={{
+            width: '70%',
+            backgroundColor: appStyle.blackColor.pureDark,
+            padding: 12,
+            borderRadius: 8,
+            justifyContent: 'center',
+          }}
+          textStyle={{
+            color: appStyle.pageColor,
+            alignSelf: 'center',
+          }}
+          selected={true}
+          text="Join the event"
+        />
+      </View>
+    );
+  };
   return (
     <BottomSheetContainer
       title={event.eventTitle}
       modelStyles={styles.modalView}
-      backDropOpacity={0.4}
+      backDropOpacity={0.2}
       showScrollSign={true}
-      viewName="EventDetailsView">
+      scrollView={true}
+      actionButtonView={jointEventButton()}>
+      <View
+        style={{
+          position: 'absolute',
+          flexDirection: 'row',
+          right: 0,
+          top: 10,
+        }}>
+        <IconTextButton
+          wrapperStyles={{
+            borderRadius: 8,
+            backgroundColor: appStyle.blackColor.lightDark,
+          }}
+          iconStyles={{marginRight: 6}}
+          text="Share"
+          iconSrc={ShareIcon}
+        />
+      </View>
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          marginTop: 2,
         }}>
         <View>
-          <View style={styles.timeContainer}>
+          <View style={{...styles.rowContainer, marginTop: 4}}>
             <ImageView
-              source={ClockIcon}
-              imageStyle={{width: 16, height: 16}}
+              source={CalenderIcon}
+              imageStyle={{
+                width: 20,
+                height: 20,
+              }}
             />
-            <TextView
-              textStyle={{marginLeft: 6}}
-              text={event.eventStartTime}
-              textSize={12}
-              fontWeight="bold"
-            />
+            <View>
+              <TextView
+                textStyle={{marginLeft: 6}}
+                text="Time"
+                textSize={12}
+                fontWeight="bold"
+              />
+              <TextView
+                textStyle={{marginLeft: 6, color: appStyle.blackColor.midDark}}
+                text={getDate(event.eventStartTime)}
+                textSize={10}
+                fontWeight="bold"
+              />
+            </View>
           </View>
 
-          <View style={styles.timeContainer}>
+          <View style={{...styles.rowContainer, marginTop: 4}}>
             <ImageView
               source={MarkerIcon}
-              imageStyle={{width: 16, height: 16}}
+              imageStyle={{width: 17, height: 22, objectFit: 'contain'}}
             />
-            <TextView
-              textStyle={{marginLeft: 6}}
-              text={address}
-              textSize={12}
-              fontWeight="bold"
-            />
+            <View>
+              <TextView
+                textStyle={{marginLeft: 6}}
+                text="Location"
+                textSize={12}
+                fontWeight="bold"
+              />
+              <TextView
+                textStyle={{marginLeft: 6, color: appStyle.blackColor.midDark}}
+                text={address}
+                textSize={10}
+                fontWeight="bold"
+              />
+            </View>
           </View>
 
-          <View style={styles.timeContainer}>
+          <View style={{...styles.rowContainer, marginTop: 4}}>
             <ImageView
-              source={FriendsBlurIcon}
-              imageStyle={{width: 16, height: 16}}
+              source={FriendsIcon}
+              imageStyle={{
+                width: 20,
+                height: 20,
+              }}
             />
-            <TextView
-              textStyle={{marginLeft: 6, color: appStyle.buttonColor.error}}
-              text="4 only few seats left"
-              textSize={10}
-              fontWeight="bold"
-            />
+            <View>
+              <TextView
+                textStyle={{marginLeft: 6}}
+                text="Age Limit"
+                textSize={12}
+                fontWeight="bold"
+              />
+              <TextView
+                textStyle={{marginLeft: 6, color: appStyle.blackColor.midDark}}
+                text={
+                  event.ageLimit.lowerValue + ' - ' + event.ageLimit.highValue
+                }
+                textSize={10}
+                fontWeight="bold"
+              />
+            </View>
           </View>
         </View>
       </View>
 
-      <View style={{marginTop: 0}}>
-        <TextView text="Description" textSize={12} fontWeight="700" />
-        <TextView text={event.eventInfo} textSize={12} numberOfLines={6} />
+      <View style={{marginTop: 10}}>
+        <TextView
+          textStyle={{marginLeft: 6}}
+          text="Responses"
+          textSize={12}
+          fontWeight="bold"
+        />
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: 6,
+          }}>
+          <TouchableOpacity
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 6}}>
+            <FlatList
+              style={{
+                alignSelf: 'center',
+                maxWidth: 80,
+              }}
+              contentContainerStyle={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                alignSelf: 'center',
+              }}
+              data={imageSources}
+              showsHorizontalScrollIndicator={false}
+              disableIntervalMomentum={true}
+              horizontal={true}
+              keyExtractor={({item, index}) => index}
+              renderItem={({item, index}) => (
+                <ImageView
+                  key={index}
+                  imageStyle={{
+                    ...styles.imageStyle,
+                    marginLeft: index !== 0 ? -10 : 4,
+                  }}
+                  roundImage={true}
+                  source={
+                    event.createdBy.imageUrl
+                      ? {uri: event.createdBy.imageUrl}
+                      : Avatar
+                  }
+                />
+              )}
+              ListEmptyComponent={() => (
+                <TextView text="No responses/invites" />
+              )}
+              snapToAlignment="center"
+              viewabilityConfig={{
+                itemVisiblePercentThreshold: '80%',
+              }}
+            />
+
+            <TextView
+              textStyle={{
+                marginLeft: 6,
+                marginTop: 0,
+                borderBottomWidth: 1,
+              }}
+              text="View All"
+              textSize={12}
+              fontWeight="bold"
+            />
+          </TouchableOpacity>
+          <BasicButton
+            selected={true}
+            textStyle={{color: appStyle.pageColor}}
+            text="Invite +"
+            iconSrc={ClockIcon}
+            triggerFunc={() => navigation.navigate('InvitationView')}
+          />
+        </View>
+      </View>
+
+      <View style={{marginTop: 16}}>
+        <TextView text="Description" textSize={14} fontWeight="700" />
+        <TextView
+          textStyle={{color: appStyle.blackColor.midDark}}
+          text={event.eventInfo}
+          textSize={12}
+          fontWeight="bold"
+        />
       </View>
 
       <View style={{marginTop: 10}}>
@@ -145,7 +300,7 @@ export const EventDetailsView = ({route}) => {
               marginTop: 0,
               zIndex: 5,
             }}
-            imageStyle={{width: 50, height: 50, borderRadius: 25}}
+            imageStyle={{width: 40, height: 40, borderRadius: 25}}
             iconSrc={
               event.createdBy.imageUrl
                 ? {uri: event.createdBy.imageUrl}
@@ -160,66 +315,35 @@ export const EventDetailsView = ({route}) => {
           />
           <View style={styles.bioContainer}>
             <TextView
-              textStyle={{color: appStyle.pageColor}}
               text={event.createdBy.name}
               textSize={12}
               fontWeight="bold"
             />
             <TextView
-              textStyle={{color: appStyle.pageColor}}
+              textStyle={{color: appStyle.blackColor.midDark}}
               text="717 followers"
               textSize={12}
-            />
-            <TextView
-              textStyle={{color: appStyle.pageColor}}
-              text="Rating 3/5"
-              textSize={12}
+              fontWeight="bold"
             />
           </View>
 
-          <IconButton
-            imageStyle={{width: 35, height: 35}}
-            iconSrc={ChatIcon}
-            selected={true}
-            text="See all"
+          <IconTextButton
+            wrapperStyles={{
+              backgroundColor: appStyle.blackColor.lightDark,
+              padding: 8,
+              borderRadius: 8,
+              justifyContent: 'center',
+            }}
+            textStyle={{
+              color: appStyle.blackColor.pureDark,
+              alignSelf: 'center',
+            }}
+            text="Message"
+            triggerFunc={() =>
+              navigation.navigate('ChatRoomView', {chatRoomId: organizer.name})
+            }
           />
         </View>
-      </View>
-
-      <View
-        style={{
-          flexDirection: 'row',
-          marginTop: 16,
-        }}>
-        <FlatList
-          key="Photos"
-          contentContainerStyle={styles.scrollView}
-          data={imageSources}
-          horizontal={true}
-          renderItem={({item, index}) => (
-            <>
-              <IconButton
-                imageStyle={{
-                  ...styles.imageStyle,
-                  marginLeft: index !== 0 ? -10 : 4,
-                }}
-                iconSrc={item}
-                triggerFunc={() => navigation.navigate('UserProfileView', {})}
-              />
-            </>
-          )}
-        />
-
-        <Picker
-          style={{backgroundColor: 'red'}}
-          mode="dropdown"
-          placeholder="Rsafas"
-          selectedValue={selectedTimeZone}
-          onValueChange={itemValue => setSelectedTimeZone(itemValue)}>
-          {timeZones.map(zone => (
-            <Picker.Item key={zone} label={zone} value={zone} />
-          ))}
-        </Picker>
       </View>
     </BottomSheetContainer>
   );
@@ -229,6 +353,7 @@ const styles = StyleSheet.create({
   modalView: {
     position: 'absolute',
     bottom: 0,
+    maxHeight: '90%',
   },
   addressContainer: {
     justifyContent: 'center',
@@ -236,7 +361,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: appStyle.blackColor.lightDark,
   },
-  timeContainer: {
+  rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -249,7 +374,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: appStyle.blackColor.pureDark,
   },
   iconButtonWrapper: {
     borderWidth: 1,
@@ -261,16 +385,15 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
   },
   imageStyle: {
-    width: 35,
-    height: 35,
-    borderRadius: 40,
-    borderWidth: 1,
-    borderColor: appStyle.blackColor.pureDark,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
   },
   textStyle: {
     marginLeft: 10,
   },
   scrollView: {
-    width: '50%',
+    flexGrow: 1,
+    alignItems: 'center',
   },
 });

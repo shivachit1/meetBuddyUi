@@ -7,9 +7,7 @@ import {
   Vibration,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  followUserAction,
-} from '../redux/user/userActions';
+import {followUserAction} from '../redux/user/userActions';
 import {IconTextButton} from '../components/Button';
 import {useEffect, useState} from 'react';
 import {ViewContainer} from '../container/ModalViewContainer';
@@ -47,11 +45,10 @@ export const UserProfileView = ({route}) => {
 
   useEffect(() => {
     if (unFollowed) {
-      updateUnfollow()
-      route.params.unFollowed = undefined
+      updateUnfollow();
+      route.params.unFollowed = undefined;
     }
   }, [unFollowed]);
-  
 
   if (!userProfileData) {
     return <></>;
@@ -61,10 +58,9 @@ export const UserProfileView = ({route}) => {
     if (isFollowed) {
       navigation.navigate('UnFollowOrganizerConfirmView', {user: user});
     } else {
-      
-      Vibration.vibrate(20)
+      Vibration.vibrate(20);
       dispatch(followUserAction(loggedInUser.id, userId));
-      updatefollow()
+      updatefollow();
     }
   };
 
@@ -76,36 +72,38 @@ export const UserProfileView = ({route}) => {
         followers: userProfileData.followData.followers.concat(loggedInUser.id),
       },
     });
-  }
+  };
 
   const updateUnfollow = () => {
     setUserProfileData({
       ...userProfileData,
       followData: {
         followings: userProfileData.followData.followings,
-        followers: userProfileData.followData.followers.filter(id => id != loggedInUser.id),
+        followers: userProfileData.followData.followers.filter(
+          id => id != loggedInUser.id,
+        ),
       },
     });
-  }
+  };
 
   const user = userProfileData.user;
   const {followers, followings} = userProfileData.followData;
   const isFollowed = followers.includes(loggedInUser.id);
 
-  const buttonNames = ['New Events', 'Previous Events', 'Reviews'];
+  const buttonNames = ['New Events', 'Past Events', 'Reviews'];
   return (
     <ViewContainer
       modelStyles={styles.modalView}
       navigation={navigation}
       height={600}
-      title={user.userName}
+      title={user.name}
       backDropOpacity={0.5}
       viewName="UserProfileView">
       <View style={styles.profileContainer}>
         <ImageView
           imageStyle={styles.imageStyle}
           roundImage={true}
-          source={user.imageUrl ? {uri : user.imageUrl} : AvatarPng}
+          source={user.imageUrl ? {uri: user.imageUrl} : AvatarPng}
         />
 
         <View style={{flex: 1}}>
@@ -118,7 +116,7 @@ export const UserProfileView = ({route}) => {
             <TouchableOpacity style={{alignItems: 'center'}}>
               <TextView
                 text={followers.length}
-                textSize={16}
+                textSize={14}
                 fontWeight="bold"
               />
               <TextView
@@ -131,7 +129,7 @@ export const UserProfileView = ({route}) => {
             <TouchableOpacity style={{alignItems: 'center'}}>
               <TextView
                 text={followings.length}
-                textSize={16}
+                textSize={14}
                 fontWeight="bold"
               />
               <TextView
@@ -145,7 +143,7 @@ export const UserProfileView = ({route}) => {
 
           <View style={styles.buttonsContainer}>
             <IconTextButton
-              wrapperStyles={styles.iconButtonWrapper}
+              wrapperStyles={{borderWidth: 0, padding: 6, borderRadius: 8}}
               imageStyle={styles.imageButtonStyle}
               iconSrc={isFollowed ? HeartDarkIcon : HeartIcon}
               text={isFollowed ? 'Following' : 'Follow'}
@@ -153,12 +151,14 @@ export const UserProfileView = ({route}) => {
               triggerFunc={() => followingToggling()}
             />
             <IconTextButton
-              wrapperStyles={{borderWidth: 0, padding: 6}}
+              wrapperStyles={{borderWidth: 0, padding: 6, borderRadius: 8}}
               imageStyle={styles.imageButtonStyle}
               iconSrc={ChatIcon}
               text="Message"
               selected={true}
-              triggerFunc={() => navigation.goBack()}
+              triggerFunc={() =>
+                navigation.navigate('ChatRoomView', {chatRoomId: user.name})
+              }
             />
           </View>
         </View>
@@ -175,7 +175,7 @@ export const UserProfileView = ({route}) => {
 
       <TabViewContainer
         buttonNames={buttonNames}
-        viewWidth={Dimensions.get('window').width * 0.8}
+        viewWidth={Dimensions.get('window').width * 0.85}
         buttonsVisible={true}
         scrollEnabled={true}>
         <FlatList
@@ -271,13 +271,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconButtonWrapper: {
-    paddingLeft: 0,
+    paddingLeft: 6,
     borderRadius: 6,
   },
   imageButtonStyle: {
     width: 25,
     height: 25,
     marginTop: -10,
+    borderRadius: 4,
   },
   imageStyle: {
     width: 70,

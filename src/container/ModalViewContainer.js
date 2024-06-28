@@ -81,6 +81,7 @@ export const ViewContainer = ({
         {contentInScrollView && (
           <ScrollView
             style={styles.scrollView}
+            indicatorStyle="black"
             automaticallyAdjustKeyboardInsets={true}>
             {children}
           </ScrollView>
@@ -110,8 +111,8 @@ const getStyles = () => {
     },
     modalView: {
       alignSelf: 'center',
-      width: '80%',
-      height: '70%',
+      width: '85%',
+      height: '80%',
       alignSelf: 'center',
       borderRadius: 10,
       backgroundColor: appStyle.pageColor,

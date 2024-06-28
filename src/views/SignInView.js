@@ -1,8 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   GoogleSignin,
@@ -16,10 +12,12 @@ import {useEffect} from 'react';
 import {googleSignIn} from '../service/UserService';
 import {signInUser} from '../redux/user/userActions';
 import {useNavigation} from '@react-navigation/native';
+import {IOS_CLIENT_ID, WEB_CLIENT_ID} from '../../config/config';
 
 GoogleSignin.configure({
-  webClientId:
-    '1234',
+  iosClientId: IOS_CLIENT_ID,
+  webClientId: WEB_CLIENT_ID,
+  offlineAccess: true,
 });
 
 export const SignInView = () => {
@@ -40,9 +38,13 @@ export const SignInView = () => {
   }, []);
 
   const GoogleLogin = async () => {
-    await GoogleSignin.hasPlayServices();
-    const userInfo = await GoogleSignin.signIn();
-    return userInfo;
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      return userInfo;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const logInWithGoogle = async () => {
